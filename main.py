@@ -17,7 +17,7 @@ musica1 = Musica(
 )
 
 musica2 = Musica(
-    titulo="First of the Year (Equinox) Extended",
+    titulo="First of the Year",
     artista="Skrillex",
     album="Álbum Y",
     genero="Eletronica",
@@ -25,7 +25,7 @@ musica2 = Musica(
 )
 
 musica3 = Musica(
-    titulo="Exaltasamba - Um Minuto",
+    titulo="Um Minuto",
     artista="Exaltasamba",
     album="Álbum Y",
     genero="Samba",
@@ -51,8 +51,7 @@ player.adicionar_na_fila(musica2)
 player.adicionar_na_fila(musica3)
 player.adicionar_na_fila(musica4)
 
-# Iniciar reprodução
-player.iniciar_em_thread()
+
 
 # Iniciar interface gráfica
 InterfaceMusical(player)

@@ -52,20 +52,22 @@ class Player:
         self.esta_pausado = False
         pygame.mixer.music.unpause()
 
-    def tocar(self, musica):
-        self.musica_atual = musica
-        pygame.mixer.music.load(musica.caminho_arquivo)
+    def tocar(self, musica=None):
+        if musica:
+            self.indice_atual = self.fila.index(musica)
+        musica_atual = self.fila[self.indice_atual]
+        pygame.mixer.music.load(musica_atual.caminho_arquivo)
         pygame.mixer.music.play()
 
-    def proxima_musica(self):
+    def proxima(self):
         if self.indice_atual < len(self.fila) - 1:
             self.indice_atual += 1
-            self.tocar(self.fila[self.indice_atual])
-
-    def musica_anterior(self):
+            self.tocar()
+    
+    def anterior(self):
         if self.indice_atual > 0:
             self.indice_atual -= 1
-            self.tocar(self.fila[self.indice_atual])
+            self.tocar()
         else:
             print("Não há música anterior para tocar")
 
