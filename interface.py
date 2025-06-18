@@ -12,6 +12,7 @@ class InterfaceMusical:
         self.modo_favoritos = False
         self.modo_playlists = False
         self.playlists = {}  # nome: [Musica, Musica, ...]
+        self.criterios = ["Título", "Artista", "Gênero", "Álbum"]  # <-- Adicionado
 
         self.root = tk.Tk()
         self.root.title("Music Player")
@@ -22,6 +23,14 @@ class InterfaceMusical:
         top_frame = tk.Frame(self.root, bg="#232323")
         top_frame.pack(side="top", fill="x", pady=5)
         self._criar_navbar(top_frame)
+
+        # Combobox de organização
+        self.combobox_ordenar = ttk.Combobox(
+            top_frame, values=self.criterios, state="readonly", width=12
+        )
+        self.combobox_ordenar.set("Título")
+        self.combobox_ordenar.pack(side="left", padx=(10, 0))
+        self.combobox_ordenar.bind("<<ComboboxSelected>>", self._ordenar_musicas)
 
         # Área principal (cards + lateral direita)
         main_area = tk.Frame(self.root, bg="#232323")
@@ -333,3 +342,25 @@ class InterfaceMusical:
             self._abrir_playlist(playlist_nome)
         else:
             messagebox.showwarning("Aviso", "Música não encontrada na playlist.")
+
+    def _ordenar_musicas(self, event=None):
+        criterio = self.combobox_ordenar.get().lower()
+        if self.modo_favoritos:
+            musicas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
+        elif self.modo_playlists:
+            # Não ordena playlists, só músicas
+            return
+        else:
+            musicas = self.player.fila
+
+        if criterio == "título":
+            musicas.sort(key=lambda m: m.titulo)
+        elif criterio == "artista":
+            musicas.sort(key=lambda m: m.artista)
+        elif criterio == "gênero":
+            musicas.sort(key=lambda m: m.genero)
+        elif criterio == "álbum":
+            musicas.sort(key=lambda m: m.album)
+
+        # Atualiza a grid com as músicas ordenadas
+        self._criar_grid_musicas(self.grid_frame, musicas=musicas)
