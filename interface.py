@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, simpledialog, messagebox
 from PIL import Image, ImageTk
 import pygame
 from tkinter import filedialog
@@ -8,8 +8,10 @@ from models.musica import Musica
 class InterfaceMusical:
     def __init__(self, player):
         self.player = player
-        self.favoritos = set()  # Armazena os caminhos das músicas favoritas
-        self.modo_favoritos = False  # Controla se está mostrando favoritos
+        self.favoritos = set()
+        self.modo_favoritos = False
+        self.modo_playlists = False
+        self.playlists = {}  # nome: [Musica, Musica, ...]
 
         self.root = tk.Tk()
         self.root.title("Music Player")
@@ -19,14 +21,13 @@ class InterfaceMusical:
         # Topo: Navegação e busca
         top_frame = tk.Frame(self.root, bg="#232323")
         top_frame.pack(side="top", fill="x", pady=5)
-
         self._criar_navbar(top_frame)
 
         # Área principal (cards + lateral direita)
         main_area = tk.Frame(self.root, bg="#232323")
         main_area.pack(side="top", fill="both", expand=True)
 
-        # Grid de músicas
+        # Grid de músicas ou playlists
         self.grid_frame = tk.Frame(main_area, bg="#232323")
         self.grid_frame.pack(side="left", fill="both", expand=True, padx=(40, 0), pady=(10, 0))
         self._criar_grid_musicas(self.grid_frame)
@@ -112,17 +113,24 @@ class InterfaceMusical:
 
     def _abrir_library(self):
         self.modo_favoritos = False
+        self.modo_playlists = False
         self._criar_grid_musicas(self.grid_frame)
 
     def _abrir_favoritos(self):
         self.modo_favoritos = True
+        self.modo_playlists = False
         self._criar_grid_musicas(self.grid_frame)
 
     def _abrir_playlists(self):
-        pass
+        self.modo_playlists = True
+        self._criar_grid_playlists(self.grid_frame)
 
     def _abrir_configuracao(self):
-        pass
+        self.modo_favoritos = False
+        self.modo_playlists = False
+        for widget in self.grid_frame.winfo_children():
+            widget.destroy()
+        tk.Label(self.grid_frame, text="Configurações", fg="white", bg="#232323", font=("Consolas", 22)).pack(pady=40)
 
     def _atualizar_musica(self):
         self.root.after(1000, self._atualizar_musica)
@@ -160,15 +168,15 @@ class InterfaceMusical:
             self.player.adicionar_na_fila(nova_musica)
         self._criar_grid_musicas(self.grid_frame)
 
-    def _criar_grid_musicas(self, parent):
+    def _criar_grid_musicas(self, parent, musicas=None, playlist_nome=None):
         for widget in parent.winfo_children():
             widget.destroy()
 
-        # Decide quais músicas mostrar
-        if self.modo_favoritos:
-            musicas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
-        else:
-            musicas = self.player.fila
+        if musicas is None:
+            if self.modo_favoritos:
+                musicas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
+            else:
+                musicas = self.player.fila
 
         colunas = 4
         card_width = 270
@@ -210,6 +218,24 @@ class InterfaceMusical:
             )
             fav_btn.pack(pady=(5, 0))
 
+            # Se estiver em uma playlist, mostrar botões de adicionar/remover
+            if playlist_nome:
+                btn_remover = tk.Button(
+                    card, text="Remover da Playlist", font=("Segoe UI", 9),
+                    bg="#444", fg="white", relief="flat",
+                    command=lambda m=musica, p=playlist_nome: self._remover_musica_playlist(p, m)
+                )
+                btn_remover.pack(pady=(5, 0))
+            elif self.modo_playlists:
+                # Adicionar à playlist selecionada
+                for nome in self.playlists:
+                    btn_add = tk.Button(
+                        card, text=f"Adicionar à {nome}", font=("Segoe UI", 9),
+                        bg="#444", fg="white", relief="flat",
+                        command=lambda m=musica, p=nome: self._adicionar_musica_playlist(p, m)
+                    )
+                    btn_add.pack(pady=(2, 0))
+
             card.bind("<Button-1>", lambda e, m=musica: self._tocar_musica(m))
             for child in card.winfo_children():
                 child.bind("<Button-1>", lambda e, m=musica: self._tocar_musica(m))
@@ -223,3 +249,87 @@ class InterfaceMusical:
 
     def _tocar_musica(self, musica):
         self.player.tocar(musica)
+
+    # --- PLAYLISTS ---
+    def _criar_grid_playlists(self, parent):
+        for widget in parent.winfo_children():
+            widget.destroy()
+
+        top = tk.Frame(parent, bg="#232323")
+        top.pack(side="top", fill="x", pady=10)
+        btn_nova = tk.Button(top, text="Nova Playlist", font=("Segoe UI", 12), bg="#292929", fg="white", relief="flat", command=self._criar_playlist)
+        btn_nova.pack(side="left", padx=10)
+        btn_remover = tk.Button(top, text="Remover Playlist", font=("Segoe UI", 12), bg="#292929", fg="white", relief="flat", command=self._remover_playlist)
+        btn_remover.pack(side="left", padx=10)
+
+        # Lista de playlists
+        lista_frame = tk.Frame(parent, bg="#232323")
+        lista_frame.pack(side="top", fill="both", expand=True, pady=20)
+
+        for idx, nome in enumerate(self.playlists):
+            pl_frame = tk.Frame(lista_frame, bg="#292929", width=400, height=60)
+            pl_frame.pack(pady=10, padx=40, fill="x")
+            pl_frame.pack_propagate(False)
+            tk.Label(pl_frame, text=nome, fg="white", bg="#292929", font=("Consolas", 16, "bold")).pack(side="left", padx=20)
+            btn_abrir = tk.Button(pl_frame, text="Abrir", font=("Segoe UI", 10), bg="#444", fg="white", relief="flat",
+                                  command=lambda n=nome: self._abrir_playlist(n))
+            btn_abrir.pack(side="right", padx=10)
+
+    def _criar_playlist(self):
+        nome = simpledialog.askstring("Nova Playlist", "Nome da playlist:", parent=self.root)
+        if nome and nome not in self.playlists:
+            self.playlists[nome] = []
+            self._criar_grid_playlists(self.grid_frame)
+        elif nome in self.playlists:
+            messagebox.showwarning("Aviso", "Já existe uma playlist com esse nome.")
+
+    def _remover_playlist(self):
+        if not self.playlists:
+            messagebox.showinfo("Info", "Nenhuma playlist para remover.")
+            return
+        nomes = list(self.playlists.keys())
+        nome = simpledialog.askstring("Remover Playlist", f"Digite o nome da playlist para remover:\n{', '.join(nomes)}", parent=self.root)
+        if nome in self.playlists:
+            del self.playlists[nome]
+            self._criar_grid_playlists(self.grid_frame)
+        else:
+            messagebox.showwarning("Aviso", "Playlist não encontrada.")
+
+    def _abrir_playlist(self, nome):
+        # Mostra as músicas da playlist e permite remover
+        musicas = self.playlists[nome]
+        self._criar_grid_musicas(self.grid_frame, musicas=musicas, playlist_nome=nome)
+
+        # Adicionar botão para adicionar músicas à playlist
+        add_frame = tk.Frame(self.grid_frame, bg="#232323")
+        add_frame.grid(row=0, column=4, rowspan=2, sticky="n")
+        tk.Label(add_frame, text="Adicionar música à playlist:", bg="#232323", fg="white", font=("Consolas", 12)).pack(pady=(10, 5))
+
+        # Lista de músicas que não estão na playlist
+        musicas_disponiveis = [m for m in self.player.fila if m not in musicas]
+        for musica in musicas_disponiveis:
+            btn = tk.Button(
+                add_frame,
+                text=f"{musica.titulo} - {musica.artista}",
+                font=("Segoe UI", 10),
+                bg="#292929",
+                fg="white",
+                relief="flat",
+                anchor="w",
+                command=lambda m=musica, p=nome: self._adicionar_musica_playlist(p, m)
+            )
+            btn.pack(fill="x", pady=2, padx=5)
+
+    def _adicionar_musica_playlist(self, playlist_nome, musica):
+        if musica not in self.playlists[playlist_nome]:
+            self.playlists[playlist_nome].append(musica)
+            messagebox.showinfo("Adicionado", f"Música adicionada à playlist '{playlist_nome}'.")
+        else:
+            messagebox.showwarning("Aviso", "A música já está na playlist.")
+
+    def _remover_musica_playlist(self, playlist_nome, musica):
+        if musica in self.playlists[playlist_nome]:
+            self.playlists[playlist_nome].remove(musica)
+            self._abrir_playlist(playlist_nome)
+        else:
+            messagebox.showwarning("Aviso", "Música não encontrada na playlist.")
