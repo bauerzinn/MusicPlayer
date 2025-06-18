@@ -29,7 +29,7 @@ musica3 = Musica(
     artista="Exaltasamba",
     album="Álbum Y",
     genero="Samba",
-    caminho_arquivo="data/exaltasamba - Um Minuto.mp3"
+    caminho_arquivo="data/Exaltasamba - Um Minuto.mp3"
 )
 
 musica4 = Musica(
