@@ -4,20 +4,30 @@ from PIL import Image, ImageTk
 import pygame
 from tkinter import filedialog
 from models.musica import Musica
+from untils.persistence import carregar_dados, salvar_dados
 
 class InterfaceMusical:
     def __init__(self, player):
         self.player = player
-        self.favoritos = set()
+
+        # Carregar dados persistidos
+        dados_carregados = carregar_dados()
+        self.favoritos = dados_carregados["favoritos"]
+        self.playlists = dados_carregados["playlists"]
+        self.player.fila = dados_carregados["fila"]
+        self.player.historico = dados_carregados["historico"]
+
         self.modo_favoritos = False
         self.modo_playlists = False
-        self.playlists = {}  # nome: [Musica, Musica, ...]
-        self.criterios = ["Título", "Artista", "Gênero", "Álbum"]  # <-- Adicionado
+        self.criterios = ["Título", "Artista", "Gênero", "Álbum"]
 
         self.root = tk.Tk()
-        self.root.title("Music Player")
+        self.root.title("SoundWave Music Player")
         self.root.geometry("1500x650")
         self.root.configure(bg="#232323")
+
+        # Adicionar protocolo para salvar ao fechar
+        self.root.protocol("WM_DELETE_WINDOW", self._salvar_e_fechar)
 
         # Topo: Navegação e busca
         top_frame = tk.Frame(self.root, bg="#232323")
@@ -93,6 +103,11 @@ class InterfaceMusical:
 
         self._atualizar_musica()
         self.root.mainloop()
+
+    def _salvar_e_fechar(self):
+        """Salva os dados e fecha a aplicação."""
+        salvar_dados(self.player, self.playlists, self.favoritos)
+        self.root.destroy()
 
     def _criar_navbar(self, parent):
         # Navegação
