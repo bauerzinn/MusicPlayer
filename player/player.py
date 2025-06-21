@@ -6,13 +6,13 @@ class Player:
     def __init__(self):
         pygame.mixer.init()
         self.musica_atual = None
-        self.fila = []
-        self.historico = []  # Lista para armazenar músicas já tocadas
+        self.fila = []  # Lista de músicas para reprodução
+        self.indice_atual = 0
+        self.historico = []  # Pilha para histórico de músicas
         self.esta_reproduzindo = False
         self.thread = None
         self.parar_reproducao = False
         self.esta_pausado = False
-        self.indice_atual = 0  # Índice da música atual na fila
 
     def adicionar_na_fila(self, musica):
         self.fila.append(musica)
@@ -54,8 +54,14 @@ class Player:
 
     def tocar(self, musica=None):
         if musica:
-            self.indice_atual = self.fila.index(musica)
+            try:
+                self.indice_atual = self.fila.index(musica)
+            except ValueError:
+                return
         musica_atual = self.fila[self.indice_atual]
+        # Adiciona ao histórico antes de tocar
+        if not self.historico or self.historico[-1] != musica_atual:
+            self.historico.append(musica_atual)
         pygame.mixer.music.load(musica_atual.caminho_arquivo)
         pygame.mixer.music.play()
 
@@ -68,6 +74,10 @@ class Player:
         if self.indice_atual > 0:
             self.indice_atual -= 1
             self.tocar()
+        elif self.historico:
+            # Volta para a última música do histórico
+            ultima = self.historico.pop()
+            self.tocar(ultima)
         else:
             print("Não há música anterior para tocar")
 
@@ -76,3 +86,6 @@ class Player:
 
     def get_musica_atual(self):
         return self.musica_atual
+
+    def ver_historico(self):
+        return list(reversed(self.historico))

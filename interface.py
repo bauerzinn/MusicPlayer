@@ -100,6 +100,7 @@ class InterfaceMusical:
             ("Library", self._abrir_library),
             ("Favoritos", self._abrir_favoritos),
             ("Playlists", self._abrir_playlists),
+            ("Histórico", self._abrir_historico),
             ("Configuração", self._abrir_configuracao)
         ]
         self.nav_buttons = []
@@ -117,8 +118,10 @@ class InterfaceMusical:
 
         # Campo de busca
         tk.Label(parent, text="Pesquisar", bg="#232323", fg="white", font=("Segoe UI", 12)).pack(side="left")
-        self.search_entry = tk.Entry(parent, width=22, font=("Segoe UI", 12), bg="#fff", relief="flat")
+        self.search_var = tk.StringVar()
+        self.search_entry = tk.Entry(parent, width=22, font=("Segoe UI", 12), bg="#fff", relief="flat", textvariable=self.search_var)
         self.search_entry.pack(side="left", padx=(5, 20))
+        self.search_entry.bind("<KeyRelease>", self._buscar_musicas)
 
     def _abrir_library(self):
         self.modo_favoritos = False
@@ -140,6 +143,20 @@ class InterfaceMusical:
         for widget in self.grid_frame.winfo_children():
             widget.destroy()
         tk.Label(self.grid_frame, text="Configurações", fg="white", bg="#232323", font=("Consolas", 22)).pack(pady=40)
+
+    def _abrir_historico(self):
+        for widget in self.grid_frame.winfo_children():
+            widget.destroy()
+        tk.Label(self.grid_frame, text="Histórico de Músicas", fg="white", bg="#232323", font=("Consolas", 22)).pack(pady=20)
+        historico = self.player.ver_historico()
+        if not historico:
+            tk.Label(self.grid_frame, text="Nenhuma música reproduzida ainda.", fg="#bbbbbb", bg="#232323", font=("Consolas", 14)).pack(pady=10)
+            return
+        for musica in historico:
+            frame = tk.Frame(self.grid_frame, bg="#292929")
+            frame.pack(fill="x", padx=40, pady=5)
+            tk.Label(frame, text=musica.titulo, fg="white", bg="#292929", font=("Consolas", 14, "bold")).pack(side="left", padx=10)
+            tk.Label(frame, text=musica.artista, fg="#bbbbbb", bg="#292929", font=("Consolas", 12)).pack(side="left", padx=10)
 
     def _atualizar_musica(self):
         self.root.after(1000, self._atualizar_musica)
@@ -364,3 +381,26 @@ class InterfaceMusical:
 
         # Atualiza a grid com as músicas ordenadas
         self._criar_grid_musicas(self.grid_frame, musicas=musicas)
+
+    def _buscar_musicas(self, event=None):
+        termo = self.search_var.get().lower()
+        if self.modo_favoritos:
+            musicas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
+        elif self.modo_playlists:
+            # Não faz busca em playlists, apenas na biblioteca/favoritos
+            return
+        else:
+            musicas = self.player.fila
+
+        if termo:
+            musicas_filtradas = [
+                m for m in musicas
+                if termo in m.titulo.lower()
+                or termo in m.artista.lower()
+                or termo in m.genero.lower()
+                or termo in m.album.lower()
+            ]
+        else:
+            musicas_filtradas = musicas
+
+        self._criar_grid_musicas(self.grid_frame, musicas=musicas_filtradas)
