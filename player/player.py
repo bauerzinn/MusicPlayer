@@ -59,6 +59,7 @@ class Player:
             except ValueError:
                 return
         musica_atual = self.fila[self.indice_atual]
+        self.musica_atual = musica_atual
         # Adiciona ao histórico antes de tocar
         if not self.historico or self.historico[-1] != musica_atual:
             self.historico.append(musica_atual)

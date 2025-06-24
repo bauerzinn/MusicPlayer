@@ -1,6 +1,48 @@
 {
     "fila": [
         {
+            "titulo": "Why'd You Only Call Me When You're High？",
+            "artista": "Arctic Monkeys",
+            "album": "Desconhecido",
+            "genero": "Indie",
+            "caminho_arquivo": "data/Why'd You Only Call Me When You're High？.mp3"
+        },
+        {
+            "titulo": "do i wanna know",
+            "artista": "Arctic monkeys",
+            "album": "Desconhecido",
+            "genero": "Indie",
+            "caminho_arquivo": "data/arctic monkeys - do i wanna know (legendado).mp3"
+        },
+        {
+            "titulo": "Um Minuto",
+            "artista": "Exaltasamba",
+            "album": "Desconhecido",
+            "genero": "Pagode",
+            "caminho_arquivo": "data/Exaltasamba - Um Minuto.mp3"
+        },
+        {
+            "titulo": "Carry On Wayward Son",
+            "artista": "Kansas",
+            "album": "Desconhecido",
+            "genero": "Rock",
+            "caminho_arquivo": "C:/Users/gabba/Downloads/Kansas - Carry On Wayward Son (Official Audio).mp3"
+        },
+        {
+            "titulo": "MC POZE NOS ANOS 80",
+            "artista": "Mc Poze",
+            "album": "Desconhecido",
+            "genero": "Funk",
+            "caminho_arquivo": "data/MC POZE NOS ANOS 80.mp3"
+        },
+        {
+            "titulo": "Smells Like Teen Spirit",
+            "artista": "Nirvana - ",
+            "album": "Desconhecido",
+            "genero": "Rock",
+            "caminho_arquivo": "data/Nirvana - Smells Like Teen Spirit (Official Music Video).mp3"
+        },
+        {
             "titulo": "ATÉ QUE DUROU",
             "artista": "Péricles",
             "album": "Desconhecido",
@@ -22,60 +64,11 @@
             "caminho_arquivo": "C:/Users/gabba/Downloads/Queen – Bohemian Rhapsody (Official Video Remastered).mp3"
         },
         {
-            "titulo": "Buque de Flores",
-            "artista": "Thiaguinho",
-            "album": "Desconhecido",
-            "genero": "Pagode",
-            "caminho_arquivo": "data/Thiaguinho - Buque de Flores.mp3"
-        },
-        {
-            "titulo": "Carry On Wayward Son",
-            "artista": "Kansas",
-            "album": "Desconhecido",
-            "genero": "Rock",
-            "caminho_arquivo": "C:/Users/gabba/Downloads/Kansas - Carry On Wayward Son (Official Audio).mp3"
-        },
-        {
             "titulo": "Diário de um Detento",
             "artista": "Racionais",
             "album": "Desconhecido",
             "genero": "Rap",
             "caminho_arquivo": "data/Diário de um Detento.mp3"
-        },
-        {
-            "titulo": "First of the Year",
-            "artista": "Skrillex",
-            "album": "Desconhecido",
-            "genero": "Eletronica",
-            "caminho_arquivo": "data/Skrillex - First of the Year (Equinox) Extended.mp3"
-        },
-        {
-            "titulo": "MC POZE NOS ANOS 80",
-            "artista": "Mc Poze",
-            "album": "Desconhecido",
-            "genero": "Funk",
-            "caminho_arquivo": "data/MC POZE NOS ANOS 80.mp3"
-        },
-        {
-            "titulo": "Make It Bun Dem",
-            "artista": "Skrillex",
-            "album": "Desconhecido",
-            "genero": "Eletronica",
-            "caminho_arquivo": "data/Skrillex Jr.  Make It Bun Dem.mp3"
-        },
-        {
-            "titulo": "Smells Like Teen Spirit",
-            "artista": "Nirvana - ",
-            "album": "Desconhecido",
-            "genero": "Rock",
-            "caminho_arquivo": "data/Nirvana - Smells Like Teen Spirit (Official Music Video).mp3"
-        },
-        {
-            "titulo": "Um Minuto",
-            "artista": "Exaltasamba",
-            "album": "Desconhecido",
-            "genero": "Pagode",
-            "caminho_arquivo": "data/Exaltasamba - Um Minuto.mp3"
         },
         {
             "titulo": "Vida Loka, Pt. 1",
@@ -85,18 +78,25 @@
             "caminho_arquivo": "data/Vida Loka, Pt. 1.mp3"
         },
         {
-            "titulo": "Why'd You Only Call Me When You're High？",
-            "artista": "Arctic Monkeys",
+            "titulo": "First of the Year",
+            "artista": "Skrillex",
             "album": "Desconhecido",
-            "genero": "Indie",
-            "caminho_arquivo": "data/Why'd You Only Call Me When You're High？.mp3"
+            "genero": "Eletronica",
+            "caminho_arquivo": "data/Skrillex - First of the Year (Equinox) Extended.mp3"
         },
         {
-            "titulo": "do i wanna know",
-            "artista": "Arctic monkeys",
+            "titulo": "Make It Bun Dem",
+            "artista": "Skrillex",
             "album": "Desconhecido",
-            "genero": "Indie",
-            "caminho_arquivo": "data/arctic monkeys - do i wanna know (legendado).mp3"
+            "genero": "Eletronica",
+            "caminho_arquivo": "data/Skrillex Jr.  Make It Bun Dem.mp3"
+        },
+        {
+            "titulo": "Buque de Flores",
+            "artista": "Thiaguinho",
+            "album": "Desconhecido",
+            "genero": "Pagode",
+            "caminho_arquivo": "data/Thiaguinho - Buque de Flores.mp3"
         }
     ],
     "historico": [
@@ -183,6 +183,27 @@
             "album": "Desconhecido",
             "genero": "Pagode",
             "caminho_arquivo": "data/PÉRICLES - ATÉ QUE DUROU (AO VIVO) - VÍDEO OFICIAL.mp3"
+        },
+        {
+            "titulo": "Buque de Flores",
+            "artista": "Thiaguinho",
+            "album": "Desconhecido",
+            "genero": "Pagode",
+            "caminho_arquivo": "data/Thiaguinho - Buque de Flores.mp3"
+        },
+        {
+            "titulo": "Carry On Wayward Son",
+            "artista": "Kansas",
+            "album": "Desconhecido",
+            "genero": "Rock",
+            "caminho_arquivo": "C:/Users/gabba/Downloads/Kansas - Carry On Wayward Son (Official Audio).mp3"
+        },
+        {
+            "titulo": "Smells Like Teen Spirit",
+            "artista": "Nirvana - ",
+            "album": "Desconhecido",
+            "genero": "Rock",
+            "caminho_arquivo": "data/Nirvana - Smells Like Teen Spirit (Official Music Video).mp3"
         }
     ],
     "playlists": {
@@ -218,8 +239,8 @@
         ]
     },
     "favoritos": [
-        "data/Queen – Bohemian Rhapsody (Official Video Remastered).mp3",
+        "data/PÉRICLES - ATÉ QUE DUROU (AO VIVO) - VÍDEO OFICIAL.mp3",
         "data/MC POZE NOS ANOS 80.mp3",
-        "data/PÉRICLES - ATÉ QUE DUROU (AO VIVO) - VÍDEO OFICIAL.mp3"
+        "data/Queen – Bohemian Rhapsody (Official Video Remastered).mp3"
     ]
 }

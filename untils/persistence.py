@@ -4,7 +4,7 @@ from models.musica import Musica
 
 DATA_FILE = "data/data.json"
 
-def salvar_dados(player, playlists, favoritos):
+def salvar_dados(player, playlists, favoritos, filepath=DATA_FILE):
     """Salva o estado da aplicação (fila, playlists, favoritos) em um arquivo JSON."""
     dados = {
         "fila": [musica.to_dict() for musica in player.fila],
@@ -15,15 +15,14 @@ def salvar_dados(player, playlists, favoritos):
         },
         "favoritos": list(favoritos)  # Salva os caminhos dos arquivos favoritos
     }
-    os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(dados, f, indent=4, ensure_ascii=False)
 
-def _criar_dados_padrao():
+def _criar_dados_padrao(music_dir="data"):
     """Cria uma estrutura de dados padrão com músicas da pasta 'data'."""
-    print("Arquivo de dados não encontrado. Criando um novo com músicas da pasta 'data'.")
+    print(f"Arquivo de dados não encontrado. Criando um novo com músicas da pasta '{music_dir}'.")
     fila_padrao = []
-    music_dir = os.path.dirname(DATA_FILE) or "data"
 
     if os.path.exists(music_dir):
         for filename in os.listdir(music_dir):
@@ -45,18 +44,18 @@ def _criar_dados_padrao():
         "favoritos": set()
     }
 
-def carregar_dados():
+def carregar_dados(filepath=DATA_FILE):
     """Carrega o estado da aplicação de um arquivo JSON.
     Se o arquivo não existir, cria um com as músicas da pasta 'data'.
     """
-    if not os.path.exists(DATA_FILE):
-        return _criar_dados_padrao()
+    if not os.path.exists(filepath):
+        return _criar_dados_padrao(os.path.dirname(filepath) or "data")
 
     try:
-        with open(DATA_FILE, "r", encoding="utf-8") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             dados = json.load(f)
     except (json.JSONDecodeError, FileNotFoundError):
-        return _criar_dados_padrao()
+        return _criar_dados_padrao(os.path.dirname(filepath) or "data")
 
     # Converte dicionários de volta para objetos Musica
     fila = [Musica.from_dict(m) for m in dados.get("fila", [])]
