@@ -10,6 +10,28 @@ class InterfaceMusical:
     def __init__(self, player):
         self.player = player
 
+        # --- Configuração de Temas ---
+        self.themes = {
+            'dark': {
+                'bg': '#232323',
+                'fg': 'white',
+                'card_bg': '#292929',
+                'text_secondary': '#bbbbbb',
+                'button_bg': '#4a4a4a',
+                'button_active': '#666'
+            },
+            'light': {
+                'bg': '#f0f0f0',
+                'fg': 'black',
+                'card_bg': '#ffffff',
+                'text_secondary': '#555555',
+                'button_bg': '#e0e0e0',
+                'button_active': '#c7c7c7'
+            }
+        }
+        self.theme = 'dark'  # Tema padrão
+        self.themed_widgets = [] # Lista para guardar widgets que mudam de cor
+
         # Carregar dados persistidos
         dados_carregados = carregar_dados()
         self.favoritos = dados_carregados["favoritos"]
@@ -24,85 +46,122 @@ class InterfaceMusical:
         self.root = tk.Tk()
         self.root.title("SoundWave Music Player")
         self.root.geometry("1500x650")
-        self.root.configure(bg="#232323")
 
         # Adicionar protocolo para salvar ao fechar
         self.root.protocol("WM_DELETE_WINDOW", self._salvar_e_fechar)
 
         # Topo: Navegação e busca
-        top_frame = tk.Frame(self.root, bg="#232323")
-        top_frame.pack(side="top", fill="x", pady=5)
-        self._criar_navbar(top_frame)
+        self.top_frame = tk.Frame(self.root)
+        self.top_frame.pack(side="top", fill="x", pady=5)
+        self._criar_navbar(self.top_frame)
 
         # Combobox de organização
         self.combobox_ordenar = ttk.Combobox(
-            top_frame, values=self.criterios, state="readonly", width=12
+            self.top_frame, values=self.criterios, state="readonly", width=12
         )
         self.combobox_ordenar.set("Título")
         self.combobox_ordenar.pack(side="left", padx=(10, 0))
         self.combobox_ordenar.bind("<<ComboboxSelected>>", self._ordenar_musicas)
 
         # Área principal (cards + lateral direita)
-        main_area = tk.Frame(self.root, bg="#232323")
-        main_area.pack(side="top", fill="both", expand=True)
+        self.main_area = tk.Frame(self.root)
+        self.main_area.pack(side="top", fill="both", expand=True)
 
-        # Grid de músicas ou playlists
-        self.grid_frame = tk.Frame(main_area, bg="#232323")
-        self.grid_frame.pack(side="left", fill="both", expand=True, padx=(40, 0), pady=(10, 0))
-        self._criar_grid_musicas(self.grid_frame)
+        # Container para o canvas e a scrollbar
+        self.grid_container = tk.Frame(self.main_area)
+        self.grid_container.pack(side="left", fill="both", expand=True, padx=(40, 0), pady=(10, 0))
+
+        # Canvas para a área de grid com scrollbar
+        self.canvas = tk.Canvas(self.grid_container, highlightthickness=0)
+        self.scrollbar = ttk.Scrollbar(self.grid_container, orient="vertical", command=self.canvas.yview)
+        self.scrollable_frame = tk.Frame(self.canvas)
+
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(
+                scrollregion=self.canvas.bbox("all")
+            )
+        )
+
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+
+        # Empacotar canvas e scrollbar
+        self.canvas.pack(side="left", fill="both", expand=True)
+        self.scrollbar.pack(side="right", fill="y")
+
+        # Bind para rolagem com o mouse
+        self.root.bind_all("<MouseWheel>", self._on_mousewheel)
+
+        # O grid de músicas será criado dentro do scrollable_frame
+        self._criar_grid_musicas(self.scrollable_frame)
 
         # Lado direito (adicionar música, volume, controles)
-        right_frame = tk.Frame(main_area, bg="#232323", width=350)
-        right_frame.pack(side="left", fill="y", padx=(30, 0), pady=(0, 0))
-        right_frame.pack_propagate(False)
+        self.right_frame = tk.Frame(self.main_area, width=350)
+        self.right_frame.pack(side="left", fill="y", padx=(30, 0), pady=(0, 0))
+        self.right_frame.pack_propagate(False)
 
         # Botão Adicionar Música
         self.botao_adicionar = tk.Button(
-            right_frame, text="＋ Adicionar Música", font=("Segoe UI", 12),
-            bg="#292929", fg="white", relief="flat", activebackground="#444"
+            self.right_frame, text="＋ Adicionar Música", font=("Segoe UI", 12),
+            relief="flat"
         )
         self.botao_adicionar.pack(side="top", fill="x", padx=10, pady=(10, 0))
         self.botao_adicionar.config(command=self._adicionar_musica)
 
         # Volume e controles na parte inferior
-        bottom_controls = tk.Frame(right_frame, bg="#232323")
-        bottom_controls.pack(side="bottom", fill="x", pady=30)
+        self.bottom_controls = tk.Frame(self.right_frame)
+        self.bottom_controls.pack(side="bottom", fill="x", pady=30)
 
         # Volume
-        volume_frame = tk.Frame(bottom_controls, bg="#232323")
-        volume_frame.pack(side="top", anchor="w", pady=(0, 10))
-        tk.Label(volume_frame, text="🔊 Volume", bg="#232323", fg="white", font=("Segoe UI", 11)).pack(side="left", padx=(0, 10))
-        self.volume_scale = ttk.Scale(volume_frame, from_=0, to=1, orient=tk.HORIZONTAL, command=self._ajustar_volume, length=200)
+        self.volume_frame = tk.Frame(self.bottom_controls)
+        self.volume_frame.pack(side="top", anchor="w", pady=(0, 10))
+        self.volume_label = tk.Label(self.volume_frame, text="🔊 Volume", font=("Segoe UI", 11))
+        self.volume_label.pack(side="left", padx=(0, 10))
+        self.volume_scale = ttk.Scale(self.volume_frame, from_=0, to=1, orient=tk.HORIZONTAL, command=self._ajustar_volume, length=200)
         self.volume_scale.set(0.5)
         self.volume_scale.pack(side="left")
 
         # Controles agrupados e centralizados
-        controls_frame = tk.Frame(bottom_controls, bg="#232323")
-        controls_frame.pack(side="top", pady=10)
+        self.controls_frame = tk.Frame(self.bottom_controls)
+        self.controls_frame.pack(side="top", pady=10)
 
         self.botao_anterior = tk.Button(
-            controls_frame, text="⏮ Anterior", font=("Segoe UI", 11),
-            bg="#292929", fg="white", relief="flat", width=12,
-            activebackground="#444", activeforeground="white", command=self._anterior
+            self.controls_frame, text="⏮ Anterior", font=("Segoe UI", 11),
+            relief="flat", width=12, command=self._anterior
         )
         self.botao_anterior.pack(side="left", padx=10)
 
         self.botao_play_pause = tk.Button(
-            controls_frame, text="▶ Play", font=("Segoe UI", 11),
-            bg="#292929", fg="white", relief="flat", width=12,
-            activebackground="#444", activeforeground="white", command=self._play_pause
+            self.controls_frame, text="▶ Play", font=("Segoe UI", 11),
+            relief="flat", width=12, command=self._play_pause
         )
         self.botao_play_pause.pack(side="left", padx=10)
 
         self.botao_proximo = tk.Button(
-            controls_frame, text="Próximo ⏭", font=("Segoe UI", 11),
-            bg="#292929", fg="white", relief="flat", width=12,
-            activebackground="#444", activeforeground="white", command=self._proximo
+            self.controls_frame, text="⏭ Próximo", font=("Segoe UI", 11),
+            relief="flat", width=12, command=self._proximo
         )
         self.botao_proximo.pack(side="left", padx=10)
 
+        # Guardar widgets para aplicar tema
+        self.themed_widgets.extend([
+            self.root, self.top_frame, self.main_area, self.grid_container, self.canvas, 
+            self.scrollable_frame, self.right_frame, self.botao_adicionar, self.bottom_controls, 
+            self.volume_frame, self.volume_label, self.controls_frame, self.botao_anterior, 
+            self.botao_play_pause, self.botao_proximo
+        ])
+
+        # Aplicar tema inicial
+        self._apply_theme()
+
+    def run(self):
         self._atualizar_musica()
         self.root.mainloop()
+
+    def _on_mousewheel(self, event):
+        """Permite rolar la lista de músicas com o scroll do mouse."""
+        self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def _salvar_e_fechar(self):
         """Salva os dados e fecha a aplicação."""
@@ -141,34 +200,89 @@ class InterfaceMusical:
     def _abrir_library(self):
         self.modo_favoritos = False
         self.modo_playlists = False
-        self._criar_grid_musicas(self.grid_frame)
+        self._criar_grid_musicas(self.scrollable_frame)
 
     def _abrir_favoritos(self):
         self.modo_favoritos = True
         self.modo_playlists = False
-        self._criar_grid_musicas(self.grid_frame)
+        musicas_favoritas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
+        self._criar_grid_musicas(self.scrollable_frame, musicas=musicas_favoritas)
 
     def _abrir_playlists(self):
         self.modo_playlists = True
-        self._criar_grid_playlists(self.grid_frame)
+        self.modo_favoritos = False
+        self._criar_grid_playlists(self.scrollable_frame)
 
     def _abrir_configuracao(self):
         self.modo_favoritos = False
         self.modo_playlists = False
-        for widget in self.grid_frame.winfo_children():
+        for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
-        tk.Label(self.grid_frame, text="Configurações", fg="white", bg="#232323", font=("Consolas", 22)).pack(pady=40)
+        
+        colors = self.themes[self.theme]
+
+        tk.Label(self.scrollable_frame, text="Configurações", fg=colors['fg'], bg=colors['bg'], font=("Consolas", 22)).pack(pady=40)
+
+        # Botão para alternar tema
+        theme_button_text = "Mudar para Tema Claro" if self.theme == 'dark' else "Mudar para Tema Escuro"
+        self.theme_button = tk.Button(
+            self.scrollable_frame, 
+            text=theme_button_text, 
+            command=self._toggle_theme, 
+            font=("Segoe UI", 12),
+            bg=colors['button_bg'], 
+            fg=colors['fg'], 
+            activebackground=colors['button_active'],
+            relief="flat"
+        )
+        self.theme_button.pack(pady=20)
+
+    def _toggle_theme(self):
+        """Alterna entre o tema claro e escuro."""
+        self.theme = 'light' if self.theme == 'dark' else 'dark'
+        self._apply_theme()
+        self._abrir_configuracao() # Redesenha a página de configurações para atualizar o botão
+
+    def _apply_theme(self):
+        """Aplica o tema atual a todos os widgets da interface."""
+        colors = self.themes[self.theme]
+        
+        # Cores para botões de controle
+        button_config = {
+            'bg': colors['button_bg'],
+            'fg': colors['fg'],
+            'activebackground': colors['button_active'],
+            'activeforeground': colors['fg']
+        }
+
+        for widget in self.themed_widgets:
+            try:
+                widget.configure(bg=colors['bg'])
+            except tk.TclError:
+                pass # Alguns widgets podem não ter a propriedade 'bg'
+
+        # Aplicar cores específicas
+        self.botao_adicionar.config(**button_config)
+        self.botao_anterior.config(**button_config)
+        self.botao_play_pause.config(**button_config)
+        self.botao_proximo.config(**button_config)
+        self.volume_label.config(fg=colors['fg'])
+        
+        # Atualizar a barra de navegação
+        for child in self.top_frame.winfo_children():
+            if isinstance(child, tk.Button):
+                child.config(bg=colors['bg'], fg=colors['fg'], activebackground=colors['button_active'])
 
     def _abrir_historico(self):
-        for widget in self.grid_frame.winfo_children():
+        for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
-        tk.Label(self.grid_frame, text="Histórico de Músicas", fg="white", bg="#232323", font=("Consolas", 22)).pack(pady=20)
+        tk.Label(self.scrollable_frame, text="Histórico de Músicas", fg="white", bg="#232323", font=("Consolas", 22)).pack(pady=20)
         historico = self.player.ver_historico()
         if not historico:
-            tk.Label(self.grid_frame, text="Nenhuma música reproduzida ainda.", fg="#bbbbbb", bg="#232323", font=("Consolas", 14)).pack(pady=10)
+            tk.Label(self.scrollable_frame, text="Nenhuma música reproduzida ainda.", fg="#bbbbbb", bg="#232323", font=("Consolas", 14)).pack(pady=10)
             return
         for musica in historico:
-            frame = tk.Frame(self.grid_frame, bg="#292929")
+            frame = tk.Frame(self.scrollable_frame, bg="#292929")
             frame.pack(fill="x", padx=40, pady=5)
             tk.Label(frame, text=musica.titulo, fg="white", bg="#292929", font=("Consolas", 14, "bold")).pack(side="left", padx=10)
             tk.Label(frame, text=musica.artista, fg="#bbbbbb", bg="#292929", font=("Consolas", 12)).pack(side="left", padx=10)
@@ -207,7 +321,7 @@ class InterfaceMusical:
                 caminho_arquivo=arquivo
             )
             self.player.adicionar_na_fila(nova_musica)
-        self._criar_grid_musicas(self.grid_frame)
+        self._criar_grid_musicas(self.scrollable_frame)
 
     def _criar_grid_musicas(self, parent, musicas=None, playlist_nome=None):
         for widget in parent.winfo_children():
@@ -219,79 +333,126 @@ class InterfaceMusical:
             else:
                 musicas = self.player.fila
 
-        colunas = 4
-        card_width = 270
-        card_height = 320
-        img_size = 170
+        cols = 5  # Número de colunas
+        for i, musica in enumerate(musicas):
+            row, col = divmod(i, cols)
 
-        # Carregue a imagem do disco uma vez só
-        try:
-            disco_img = Image.open("disco.png").resize((img_size, img_size))
-        except Exception:
-            disco_img = Image.new("RGB", (img_size, img_size), color="#ece5c6")
-            from PIL import ImageDraw
-            draw = ImageDraw.Draw(disco_img)
-            draw.ellipse((20, 20, img_size-20, img_size-20), fill="#18343b")
-            draw.ellipse((img_size//2-25, img_size//2-25, img_size//2+25, img_size//2+25), fill="#f7b21b")
-        disco_img_tk = ImageTk.PhotoImage(disco_img)
-
-        for idx, musica in enumerate(musicas):
-            i = idx // colunas
-            j = idx % colunas
-            card = tk.Frame(parent, bg="#292929", width=card_width, height=card_height)
-            card.grid(row=i, column=j, padx=40, pady=20)
+            card = tk.Frame(parent, bd=1, relief="solid", borderwidth=0, width=220, height=320)
+            card.grid(row=row, column=col, padx=15, pady=15)
             card.pack_propagate(False)
 
-            lbl_img = tk.Label(card, image=disco_img_tk, bg="#ece5c6", width=img_size, height=img_size)
+            # --- Correção do clique para tocar música ---
+            click_handler = lambda e, m=musica: self._tocar_musica(m)
+            card.bind("<Button-1>", click_handler)
+
+            # Cores do tema atual
+            colors = self.themes[self.theme]
+            card.config(bg=colors['card_bg'])
+
+            # Imagem do disco
+            disco_img = Image.open("disco.png").resize((150, 150), Image.Resampling.LANCZOS)
+            disco_img_tk = ImageTk.PhotoImage(disco_img)
+            lbl_img = tk.Label(card, image=disco_img_tk, bg=colors['card_bg'])
             lbl_img.image = disco_img_tk
             lbl_img.pack(pady=(20, 10))
+            lbl_img.bind("<Button-1>", click_handler) # Adiciona o clique na imagem
 
-            tk.Label(card, text=musica.titulo, fg="white", bg="#292929", font=("Consolas", 14, "bold")).pack()
-            tk.Label(card, text=musica.artista, fg="#bbbbbb", bg="#292929", font=("Consolas", 12)).pack()
+            # Título e Artista com bind de clique
+            title_label = tk.Label(card, text=musica.titulo, font=("Consolas", 14, "bold"), fg=colors['fg'], bg=colors['card_bg'])
+            title_label.pack()
+            title_label.bind("<Button-1>", click_handler)
 
-            # Botão de favoritar
-            is_fav = musica.caminho_arquivo in self.favoritos
-            fav_icon = "★" if is_fav else "☆"
+            artist_label = tk.Label(card, text=musica.artista, font=("Consolas", 12), fg=colors['text_secondary'], bg=colors['card_bg'])
+            artist_label.pack(pady=(0, 10))
+            artist_label.bind("<Button-1>", click_handler)
+
+            # Frame para os botões de ação (sem bind de clique para tocar)
+            actions_frame = tk.Frame(card, bg=colors['card_bg'])
+            actions_frame.pack(pady=5)
+
+            # Botão de favorito
+            fav_char = "★" if musica.caminho_arquivo in self.favoritos else "☆"
             fav_btn = tk.Button(
-                card, text=fav_icon, font=("Segoe UI", 18), fg="#FFD700", bg="#292929",
-                relief="flat", bd=0, activebackground="#292929",
+                actions_frame, text=fav_char, font=("Segoe UI", 16, "bold"), fg="#FFD700",
+                bg=colors['card_bg'], relief="flat", bd=0, activebackground=colors['card_bg'],
                 command=lambda m=musica: self._toggle_favorito(m)
             )
-            fav_btn.pack(pady=(5, 0))
+            fav_btn.pack(side="left", padx=10)
 
-            # Se estiver em uma playlist, mostrar botões de adicionar/remover
+            # Botão de editar
+            edit_button = tk.Button(
+                actions_frame, text="Editar", font=("Segoe UI", 10),
+                bg=colors['button_bg'], fg=colors['fg'],
+                relief="flat", activebackground=colors['button_active'],
+                command=lambda m=musica: self._editar_musica(m)
+            )
+            edit_button.pack(side="left", padx=10)
+
+            # Se estiver em uma playlist, mostrar botão de remover
             if playlist_nome:
-                btn_remover = tk.Button(
-                    card, text="Remover da Playlist", font=("Segoe UI", 9),
-                    bg="#444", fg="white", relief="flat",
-                    command=lambda m=musica, p=playlist_nome: self._remover_musica_playlist(p, m)
+                remover_musica_btn = tk.Button(
+                    actions_frame, text="Remover", font=("Segoe UI", 10),
+                    bg="#5a2a2a", fg="white", relief="flat", activebackground="#7a4a4a",
+                    command=lambda p=playlist_nome, m=musica: self._remover_musica_playlist(p, m)
                 )
-                btn_remover.pack(pady=(5, 0))
-            elif self.modo_playlists:
-                # Adicionar à playlist selecionada
-                for nome in self.playlists:
-                    btn_add = tk.Button(
-                        card, text=f"Adicionar à {nome}", font=("Segoe UI", 9),
-                        bg="#444", fg="white", relief="flat",
-                        command=lambda m=musica, p=nome: self._adicionar_musica_playlist(p, m)
-                    )
-                    btn_add.pack(pady=(2, 0))
-
-            card.bind("<Button-1>", lambda e, m=musica: self._tocar_musica(m))
-            for child in card.winfo_children():
-                child.bind("<Button-1>", lambda e, m=musica: self._tocar_musica(m))
+                remover_musica_btn.pack(side="left", padx=10)
 
     def _toggle_favorito(self, musica):
-        if musica.caminho_arquivo in self.favoritos:
-            self.favoritos.remove(musica.caminho_arquivo)
+        caminho = musica.caminho_arquivo
+        if caminho in self.favoritos:
+            self.favoritos.remove(caminho)
         else:
-            self.favoritos.add(musica.caminho_arquivo)
-        self._criar_grid_musicas(self.grid_frame)
+            self.favoritos.add(caminho)
+        self._criar_grid_musicas(self.scrollable_frame)
+
+    def _editar_musica(self, musica):
+        editor_window = tk.Toplevel(self.root)
+        editor_window.title("Editar Música")
+        editor_window.geometry("400x250")
+        editor_window.configure(bg="#232323")
+        editor_window.resizable(False, False)
+
+        x = self.root.winfo_x()
+        y = self.root.winfo_y()
+        editor_window.geometry(f"+{(x + self.root.winfo_width() // 2) - 200}+{(y + self.root.winfo_height() // 2) - 125}")
+
+        colors = self.themes[self.theme]
+        editor_window.configure(bg=colors['bg'])
+
+        frame = tk.Frame(editor_window, padx=20, pady=20, bg=colors['bg'])
+        frame.pack(fill="both", expand=True)
+
+        # Campos de entrada
+        tk.Label(frame, text="Título:", font=("Segoe UI", 11), bg=colors['bg'], fg=colors['fg']).grid(row=0, column=0, sticky="w", pady=5)
+        titulo_var = tk.StringVar(value=musica.titulo)
+        tk.Entry(frame, textvariable=titulo_var, width=40, bg=colors['button_bg'], fg=colors['fg'], relief="flat").grid(row=0, column=1, sticky="w")
+
+        tk.Label(frame, text="Artista:", font=("Segoe UI", 11), bg=colors['bg'], fg=colors['fg']).grid(row=1, column=0, sticky="w", pady=5)
+        artista_var = tk.StringVar(value=musica.artista)
+        tk.Entry(frame, textvariable=artista_var, width=40, bg=colors['button_bg'], fg=colors['fg'], relief="flat").grid(row=1, column=1, sticky="w")
+
+        tk.Label(frame, text="Gênero:", font=("Segoe UI", 11), bg=colors['bg'], fg=colors['fg']).grid(row=2, column=0, sticky="w", pady=5)
+        genero_var = tk.StringVar(value=musica.genero)
+        tk.Entry(frame, textvariable=genero_var, width=40, bg=colors['button_bg'], fg=colors['fg'], relief="flat").grid(row=2, column=1, sticky="w")
+
+        def salvar_edicao():
+            musica.titulo = titulo_var.get()
+            musica.artista = artista_var.get()
+            musica.genero = genero_var.get()
+            editor_window.destroy()
+            self._criar_grid_musicas(self.scrollable_frame) # Atualiza a grid
+
+        # Botão Salvar
+        save_button = tk.Button(frame, text="Salvar", command=salvar_edicao, font=("Segoe UI", 11), bg=colors['button_bg'], fg=colors['fg'], relief="flat")
+        save_button.grid(row=3, column=1, sticky="e", pady=20)
+
+        editor_window.transient(self.root) 
+        editor_window.grab_set()
+        self.root.wait_window(editor_window)
 
     def _tocar_musica(self, musica):
         self.player.tocar(musica)
 
-    # --- PLAYLISTS ---
     def _criar_grid_playlists(self, parent):
         for widget in parent.winfo_children():
             widget.destroy()
@@ -303,7 +464,6 @@ class InterfaceMusical:
         btn_remover = tk.Button(top, text="Remover Playlist", font=("Segoe UI", 12), bg="#292929", fg="white", relief="flat", command=self._remover_playlist)
         btn_remover.pack(side="left", padx=10)
 
-        # Lista de playlists
         lista_frame = tk.Frame(parent, bg="#232323")
         lista_frame.pack(side="top", fill="both", expand=True, pady=20)
 
@@ -317,10 +477,10 @@ class InterfaceMusical:
             btn_abrir.pack(side="right", padx=10)
 
     def _criar_playlist(self):
-        nome = simpledialog.askstring("Nova Playlist", "Nome da playlist:", parent=self.root)
+        nome = simpledialog.askstring("Nova Playlist", "Digite o nome da playlist:", parent=self.root)
         if nome and nome not in self.playlists:
             self.playlists[nome] = []
-            self._criar_grid_playlists(self.grid_frame)
+            self._criar_grid_playlists(self.scrollable_frame)
         elif nome in self.playlists:
             messagebox.showwarning("Aviso", "Já existe uma playlist com esse nome.")
 
@@ -332,21 +492,18 @@ class InterfaceMusical:
         nome = simpledialog.askstring("Remover Playlist", f"Digite o nome da playlist para remover:\n{', '.join(nomes)}", parent=self.root)
         if nome in self.playlists:
             del self.playlists[nome]
-            self._criar_grid_playlists(self.grid_frame)
+            self._criar_grid_playlists(self.scrollable_frame)
         else:
             messagebox.showwarning("Aviso", "Playlist não encontrada.")
 
     def _abrir_playlist(self, nome):
-        # Mostra as músicas da playlist e permite remover
         musicas = self.playlists[nome]
-        self._criar_grid_musicas(self.grid_frame, musicas=musicas, playlist_nome=nome)
+        self._criar_grid_musicas(self.scrollable_frame, musicas=musicas, playlist_nome=nome)
 
-        # Adicionar botão para adicionar músicas à playlist
-        add_frame = tk.Frame(self.grid_frame, bg="#232323")
+        add_frame = tk.Frame(self.scrollable_frame, bg="#232323")
         add_frame.grid(row=0, column=4, rowspan=2, sticky="n")
         tk.Label(add_frame, text="Adicionar música à playlist:", bg="#232323", fg="white", font=("Consolas", 12)).pack(pady=(10, 5))
 
-        # Lista de músicas que não estão na playlist
         musicas_disponiveis = [m for m in self.player.fila if m not in musicas]
         for musica in musicas_disponiveis:
             btn = tk.Button(
@@ -380,7 +537,6 @@ class InterfaceMusical:
         if self.modo_favoritos:
             musicas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
         elif self.modo_playlists:
-            # Não ordena playlists, só músicas
             return
         else:
             musicas = self.player.fila
@@ -394,15 +550,13 @@ class InterfaceMusical:
         elif criterio == "álbum":
             musicas.sort(key=lambda m: m.album)
 
-        # Atualiza a grid com as músicas ordenadas
-        self._criar_grid_musicas(self.grid_frame, musicas=musicas)
+        self._criar_grid_musicas(self.scrollable_frame, musicas=musicas)
 
     def _buscar_musicas(self, event=None):
         termo = self.search_var.get().lower()
         if self.modo_favoritos:
             musicas = [m for m in self.player.fila if m.caminho_arquivo in self.favoritos]
         elif self.modo_playlists:
-            # Não faz busca em playlists, apenas na biblioteca/favoritos
             return
         else:
             musicas = self.player.fila
@@ -418,4 +572,4 @@ class InterfaceMusical:
         else:
             musicas_filtradas = musicas
 
-        self._criar_grid_musicas(self.grid_frame, musicas=musicas_filtradas)
+        self._criar_grid_musicas(self.scrollable_frame, musicas=musicas_filtradas)
