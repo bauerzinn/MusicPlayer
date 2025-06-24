@@ -1,161 +1,123 @@
 {
     "fila": [
         {
-            "titulo": "Exaltasamba - Um Minuto.mp3",
+            "titulo": "arctic monkeys - do i wanna know (legendado)",
             "artista": "Desconhecido",
             "album": "Desconhecido",
             "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Exaltasamba - Um Minuto.mp3"
+            "caminho_arquivo": "data/arctic monkeys - do i wanna know (legendado).mp3"
         },
         {
-            "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
+            "titulo": "Diário de um Detento",
             "artista": "Desconhecido",
             "album": "Desconhecido",
             "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
+            "caminho_arquivo": "data/Diário de um Detento.mp3"
         },
         {
-            "titulo": "Skrillex Jr.  Make It Bun Dem.mp3",
+            "titulo": "Exaltasamba - Um Minuto",
             "artista": "Desconhecido",
             "album": "Desconhecido",
             "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3"
+            "caminho_arquivo": "data/Exaltasamba - Um Minuto.mp3"
         },
         {
-            "titulo": "Thiaguinho - Buque de Flores.mp3",
+            "titulo": "MC POZE NOS ANOS 80",
             "artista": "Desconhecido",
             "album": "Desconhecido",
             "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Thiaguinho - Buque de Flores.mp3"
+            "caminho_arquivo": "data/MC POZE NOS ANOS 80.mp3"
+        },
+        {
+            "titulo": "Nirvana - Smells Like Teen Spirit (Official Music Video)",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Nirvana - Smells Like Teen Spirit (Official Music Video).mp3"
+        },
+        {
+            "titulo": "PÉRICLES - ATÉ QUE DUROU (AO VIVO) - VÍDEO OFICIAL",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/PÉRICLES - ATÉ QUE DUROU (AO VIVO) - VÍDEO OFICIAL.mp3"
+        },
+        {
+            "titulo": "Queen – Bohemian Rhapsody (Official Video Remastered)",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Queen – Bohemian Rhapsody (Official Video Remastered).mp3"
+        },
+        {
+            "titulo": "Skrillex - First of the Year (Equinox) Extended",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Skrillex - First of the Year (Equinox) Extended.mp3"
+        },
+        {
+            "titulo": "Skrillex Jr.  Make It Bun Dem",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Skrillex Jr.  Make It Bun Dem.mp3"
+        },
+        {
+            "titulo": "Thiaguinho - Buque de Flores",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Thiaguinho - Buque de Flores.mp3"
+        },
+        {
+            "titulo": "Vida Loka, Pt. 1",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Vida Loka, Pt. 1.mp3"
+        },
+        {
+            "titulo": "Why'd You Only Call Me When You're High？",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "data/Why'd You Only Call Me When You're High？.mp3"
+        },
+        {
+            "titulo": "Kansas - Carry On Wayward Son (Official Audio).mp3",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "C:/Users/gabba/Downloads/Kansas - Carry On Wayward Son (Official Audio).mp3"
+        },
+        {
+            "titulo": "Queen – Bohemian Rhapsody (Official Video Remastered).mp3",
+            "artista": "Desconhecido",
+            "album": "Desconhecido",
+            "genero": "Desconhecido",
+            "caminho_arquivo": "C:/Users/gabba/Downloads/Queen – Bohemian Rhapsody (Official Video Remastered).mp3"
         }
     ],
     "historico": [
         {
-            "titulo": "Exaltasamba - Um Minuto.mp3",
+            "titulo": "Queen – Bohemian Rhapsody (Official Video Remastered).mp3",
             "artista": "Desconhecido",
             "album": "Desconhecido",
             "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Exaltasamba - Um Minuto.mp3"
-        },
-        {
-            "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
-        },
-        {
-            "titulo": "Skrillex Jr.  Make It Bun Dem.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3"
-        },
-        {
-            "titulo": "Thiaguinho - Buque de Flores.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Thiaguinho - Buque de Flores.mp3"
-        },
-        {
-            "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
-        },
-        {
-            "titulo": "Exaltasamba - Um Minuto.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Exaltasamba - Um Minuto.mp3"
-        },
-        {
-            "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
-        },
-        {
-            "titulo": "Skrillex Jr.  Make It Bun Dem.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3"
-        },
-        {
-            "titulo": "Thiaguinho - Buque de Flores.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Thiaguinho - Buque de Flores.mp3"
-        },
-        {
-            "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
-        },
-        {
-            "titulo": "Exaltasamba - Um Minuto.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Exaltasamba - Um Minuto.mp3"
-        },
-        {
-            "titulo": "Skrillex Jr.  Make It Bun Dem.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3"
-        },
-        {
-            "titulo": "Thiaguinho - Buque de Flores.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Thiaguinho - Buque de Flores.mp3"
-        },
-        {
-            "titulo": "Skrillex Jr.  Make It Bun Dem.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3"
-        },
-        {
-            "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
-            "artista": "Desconhecido",
-            "album": "Desconhecido",
-            "genero": "Desconhecido",
-            "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
+            "caminho_arquivo": "C:/Users/gabba/Downloads/Queen – Bohemian Rhapsody (Official Video Remastered).mp3"
         }
     ],
     "playlists": {
-        "adsda": [
+        "j": [
             {
-                "titulo": "Skrillex Jr.  Make It Bun Dem.mp3",
+                "titulo": "Queen – Bohemian Rhapsody (Official Video Remastered).mp3",
                 "artista": "Desconhecido",
                 "album": "Desconhecido",
                 "genero": "Desconhecido",
-                "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3"
-            },
-            {
-                "titulo": "Skrillex - First of the Year (Equinox) Extended.mp3",
-                "artista": "Desconhecido",
-                "album": "Desconhecido",
-                "genero": "Desconhecido",
-                "caminho_arquivo": "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
+                "caminho_arquivo": "C:/Users/gabba/Downloads/Queen – Bohemian Rhapsody (Official Video Remastered).mp3"
             }
         ]
     },
-    "favoritos": [
-        "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex Jr.  Make It Bun Dem.mp3",
-        "C:/Users/gabba/Desktop/MusicPlayer-main/data/Skrillex - First of the Year (Equinox) Extended.mp3"
-    ]
+    "favoritos": []
 }
