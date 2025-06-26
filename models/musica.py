@@ -9,7 +9,6 @@ class Musica:
         self.caminho_arquivo = caminho_arquivo
 
     def to_dict(self):
-        """Converte o objeto Musica para um dicionário."""
         return {
             "titulo": self.titulo,
             "artista": self.artista,
@@ -20,7 +19,6 @@ class Musica:
 
     @classmethod
     def from_dict(cls, data):
-        """Cria um objeto Musica a partir de um dicionário."""
         return cls(**data)
 
     def __str__(self):

@@ -127,6 +127,13 @@
             "album": "Desconhecido",
             "genero": "Rock",
             "caminho_arquivo": "data/Nirvana - Smells Like Teen Spirit (Official Music Video).mp3"
+        },
+        {
+            "titulo": "Sweet Child O' Mine",
+            "artista": "Guns N' Roses",
+            "album": "Desconhecido",
+            "genero": "Rock",
+            "caminho_arquivo": "data/Guns N' Roses - Sweet Child O' Mine (Official Music Video).mp3"
         }
     ],
     "playlists": {

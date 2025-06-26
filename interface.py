@@ -10,7 +10,7 @@ class InterfaceMusical:
     def __init__(self, player):
         self.player = player
 
-        # --- Configuração de Temas ---
+
         self.themes = {
             'dark': {
                 'bg': '#232323',
@@ -29,8 +29,8 @@ class InterfaceMusical:
                 'button_active': '#c7c7c7'
             }
         }
-        self.theme = 'dark'  # Tema padrão
-        self.themed_widgets = [] # Lista para guardar widgets que mudam de cor
+        self.theme = 'dark'
+        self.themed_widgets = [] 
 
         # Carregar dados persistidos
         dados_carregados = carregar_dados()
@@ -47,7 +47,7 @@ class InterfaceMusical:
         self.root.title("SoundWave Music Player")
         self.root.geometry("1500x650")
 
-        # Adicionar protocolo para salvar ao fechar
+       
         self.root.protocol("WM_DELETE_WINDOW", self._salvar_e_fechar)
 
         # Topo: Navegação e busca
@@ -55,7 +55,7 @@ class InterfaceMusical:
         self.top_frame.pack(side="top", fill="x", pady=5)
         self._criar_navbar(self.top_frame)
 
-        # Combobox de organização
+        
         self.combobox_ordenar = ttk.Combobox(
             self.top_frame, values=self.criterios, state="readonly", width=12
         )
@@ -71,7 +71,6 @@ class InterfaceMusical:
         self.grid_container = tk.Frame(self.main_area)
         self.grid_container.pack(side="left", fill="both", expand=True, padx=(40, 0), pady=(10, 0))
 
-        # Canvas para a área de grid com scrollbar
         self.canvas = tk.Canvas(self.grid_container, highlightthickness=0)
         self.scrollbar = ttk.Scrollbar(self.grid_container, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = tk.Frame(self.canvas)
@@ -86,14 +85,11 @@ class InterfaceMusical:
         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
 
-        # Empacotar canvas e scrollbar
         self.canvas.pack(side="left", fill="both", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
-        # Bind para rolagem com o mouse
         self.root.bind_all("<MouseWheel>", self._on_mousewheel)
 
-        # O grid de músicas será criado dentro do scrollable_frame
         self._criar_grid_musicas(self.scrollable_frame)
 
         # Lado direito (adicionar música, volume, controles)
@@ -122,7 +118,6 @@ class InterfaceMusical:
         self.volume_scale.set(0.5)
         self.volume_scale.pack(side="left")
 
-        # Controles agrupados e centralizados
         self.controls_frame = tk.Frame(self.bottom_controls)
         self.controls_frame.pack(side="top", pady=10)
 
@@ -144,7 +139,6 @@ class InterfaceMusical:
         )
         self.botao_proximo.pack(side="left", padx=10)
 
-        # Guardar widgets para aplicar tema
         self.themed_widgets.extend([
             self.root, self.top_frame, self.main_area, self.grid_container, self.canvas, 
             self.scrollable_frame, self.right_frame, self.botao_adicionar, self.bottom_controls, 
@@ -152,7 +146,6 @@ class InterfaceMusical:
             self.botao_play_pause, self.botao_proximo
         ])
 
-        # Aplicar tema inicial
         self._apply_theme()
 
     def run(self):
@@ -164,7 +157,6 @@ class InterfaceMusical:
         self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def _salvar_e_fechar(self):
-        """Salva os dados e fecha a aplicação."""
         salvar_dados(self.player, self.playlists, self.favoritos)
         self.root.destroy()
 
@@ -187,7 +179,6 @@ class InterfaceMusical:
             btn.bind("<Button-1>", lambda e, cmd=comando: cmd())
             self.nav_buttons.append(btn)
 
-        # Espaço entre navegação e busca
         tk.Label(parent, bg="#232323").pack(side="left", padx=20)
 
         # Campo de busca
@@ -244,10 +235,7 @@ class InterfaceMusical:
         self._abrir_configuracao() # Redesenha a página de configurações para atualizar o botão
 
     def _apply_theme(self):
-        """Aplica o tema atual a todos os widgets da interface."""
         colors = self.themes[self.theme]
-        
-        # Cores para botões de controle
         button_config = {
             'bg': colors['button_bg'],
             'fg': colors['fg'],
@@ -259,16 +247,14 @@ class InterfaceMusical:
             try:
                 widget.configure(bg=colors['bg'])
             except tk.TclError:
-                pass # Alguns widgets podem não ter a propriedade 'bg'
+                pass
 
-        # Aplicar cores específicas
         self.botao_adicionar.config(**button_config)
         self.botao_anterior.config(**button_config)
         self.botao_play_pause.config(**button_config)
         self.botao_proximo.config(**button_config)
         self.volume_label.config(fg=colors['fg'])
-        
-        # Atualizar a barra de navegação
+
         for child in self.top_frame.winfo_children():
             if isinstance(child, tk.Button):
                 child.config(bg=colors['bg'], fg=colors['fg'], activebackground=colors['button_active'])
@@ -333,7 +319,7 @@ class InterfaceMusical:
             else:
                 musicas = self.player.fila
 
-        cols = 5  # Número de colunas
+        cols = 5
         for i, musica in enumerate(musicas):
             row, col = divmod(i, cols)
 
@@ -341,11 +327,9 @@ class InterfaceMusical:
             card.grid(row=row, column=col, padx=15, pady=15)
             card.pack_propagate(False)
 
-            # --- Correção do clique para tocar música ---
             click_handler = lambda e, m=musica: self._tocar_musica(m)
             card.bind("<Button-1>", click_handler)
 
-            # Cores do tema atual
             colors = self.themes[self.theme]
             card.config(bg=colors['card_bg'])
 
@@ -355,9 +339,8 @@ class InterfaceMusical:
             lbl_img = tk.Label(card, image=disco_img_tk, bg=colors['card_bg'])
             lbl_img.image = disco_img_tk
             lbl_img.pack(pady=(20, 10))
-            lbl_img.bind("<Button-1>", click_handler) # Adiciona o clique na imagem
+            lbl_img.bind("<Button-1>", click_handler)
 
-            # Título e Artista com bind de clique
             title_label = tk.Label(card, text=musica.titulo, font=("Consolas", 14, "bold"), fg=colors['fg'], bg=colors['card_bg'])
             title_label.pack()
             title_label.bind("<Button-1>", click_handler)
@@ -366,7 +349,6 @@ class InterfaceMusical:
             artist_label.pack(pady=(0, 10))
             artist_label.bind("<Button-1>", click_handler)
 
-            # Frame para os botões de ação (sem bind de clique para tocar)
             actions_frame = tk.Frame(card, bg=colors['card_bg'])
             actions_frame.pack(pady=5)
 
@@ -440,13 +422,13 @@ class InterfaceMusical:
             musica.artista = artista_var.get()
             musica.genero = genero_var.get()
             editor_window.destroy()
-            self._criar_grid_musicas(self.scrollable_frame) # Atualiza a grid
+            self._criar_grid_musicas(self.scrollable_frame)
 
         # Botão Salvar
         save_button = tk.Button(frame, text="Salvar", command=salvar_edicao, font=("Segoe UI", 11), bg=colors['button_bg'], fg=colors['fg'], relief="flat")
         save_button.grid(row=3, column=1, sticky="e", pady=20)
 
-        editor_window.transient(self.root) 
+        editor_window.transient(self.root)
         editor_window.grab_set()
         self.root.wait_window(editor_window)
 

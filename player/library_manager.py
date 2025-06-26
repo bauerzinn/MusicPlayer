@@ -7,7 +7,6 @@ from player.libraryOrganizer import LibraryOrganizer
 class LibraryManager:
     def __init__(self, player):
         self.player = player
-        # A biblioteca principal de músicas será a fila do player
         self.biblioteca = self.player.fila
         self.organizer = LibraryOrganizer()
         self.organized_library = self.organizer.build_tree(self.biblioteca)
@@ -37,7 +36,6 @@ class LibraryManager:
             return None
 
     def reorganize_library(self):
-        """Reconstrói a árvore da biblioteca."""
         self.organized_library = self.organizer.build_tree(self.biblioteca)
 
     def buscar_musicas(self, termo, musicas):

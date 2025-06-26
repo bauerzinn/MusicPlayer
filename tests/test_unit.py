@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
-# Adicionar o diretório raiz ao path para encontrar os módulos
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from models.musica import Musica
@@ -11,7 +10,6 @@ from player.player import Player
 
 class TestMusica(unittest.TestCase):
     def test_criar_musica(self):
-        """Testa se um objeto Musica é criado com os atributos corretos."""
         musica = Musica(
             titulo="Bohemian Rhapsody",
             artista="Queen",
@@ -26,11 +24,11 @@ class TestMusica(unittest.TestCase):
         self.assertEqual(musica.caminho_arquivo, "/path/to/bohemian.mp3")
 
 
-# Mock de pygame para evitar erros de inicialização de áudio nos testes
+
 @patch('player.player.pygame')
 class TestPlayer(unittest.TestCase):
     def setUp(self):
-        """Configura o ambiente de teste antes de cada teste."""
+
         self.player = Player()
         self.musica1 = Musica("Musica 1", "Artista 1", "Album 1", "Pop", "path/1.mp3")
         self.musica2 = Musica("Musica 2", "Artista 2", "Album 2", "Rock", "path/2.mp3")
@@ -82,7 +80,6 @@ class TestPlayer(unittest.TestCase):
     def test_proxima_no_fim_da_fila(self, mock_pygame):
         """Testa se o player não faz nada ao tentar avançar no fim da fila."""
         self.player.tocar(self.musica2)
-        # A implementação atual não limpa musica_atual, apenas não toca.
         # O teste verifica se o estado não muda de forma inesperada.
         self.player.proxima()
         self.assertEqual(self.player.musica_atual, self.musica2) # Deve permanecer na última música

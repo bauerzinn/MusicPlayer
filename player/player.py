@@ -6,9 +6,9 @@ class Player:
     def __init__(self):
         pygame.mixer.init()
         self.musica_atual = None
-        self.fila = []  # Lista de músicas para reprodução
+        self.fila = []  
         self.indice_atual = 0
-        self.historico = []  # Pilha para histórico de músicas
+        self.historico = [] 
         self.esta_reproduzindo = False
         self.thread = None
         self.parar_reproducao = False
@@ -31,12 +31,12 @@ class Player:
                 if musica.existe_arquivo():
                     print(f"Reproduzindo: {musica}")
                     self.musica_atual = musica
-                    self.historico.append(musica)  # Adiciona à história
+                    self.historico.append(musica) 
                     pygame.mixer.music.load(musica.caminho_arquivo)
                     pygame.mixer.music.play()
                 else:
                     print(f"Arquivo não encontrado: {musica.caminho_arquivo}")
-            sleep(0.1)  # Evita uso excessivo de CPU
+            sleep(0.1) 
 
     def parar(self):
         self.parar_reproducao = True
@@ -60,7 +60,6 @@ class Player:
                 return
         musica_atual = self.fila[self.indice_atual]
         self.musica_atual = musica_atual
-        # Adiciona ao histórico antes de tocar
         if not self.historico or self.historico[-1] != musica_atual:
             self.historico.append(musica_atual)
         pygame.mixer.music.load(musica_atual.caminho_arquivo)
@@ -76,7 +75,6 @@ class Player:
             self.indice_atual -= 1
             self.tocar()
         elif self.historico:
-            # Volta para a última música do histórico
             ultima = self.historico.pop()
             self.tocar(ultima)
         else:
